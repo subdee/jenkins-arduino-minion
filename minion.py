@@ -5,7 +5,7 @@ import time
 import requests
 import sys
 
-latestBuildNumber = None
+latestBuildNumber = 0
 jenkinsApiUrl = 'jenkinsapiurl'
 
 while True:
@@ -26,13 +26,13 @@ while True:
     if "result" in status:
         currentBuildNumber = status['number']
         print('checking build ' + str(currentBuildNumber))
-        if status['result'] != "SUCCESS" and currentBuildNumber > latestBuildNumber:
+        if status['result'] == "FAILURE" and currentBuildNumber > latestBuildNumber:
             arduino.write(bytes(b'1'))
             time.sleep(1)
             arduino.close()
             latestBuildNumber = status['number']
             print('build failed')
         else:
-            print('build succeeded')
+            print('build ok')
 
-    time.sleep(10)
+    time.sleep(30)
