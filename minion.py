@@ -5,19 +5,19 @@ import time
 import requests
 import sys
 
-try:
-    arduino = serial.Serial("/dev/ttyACM0")
-    time.sleep(1)
-    print("Connection to Arduino established successfully!\n")
-except Exception as e:
-    print(e)
-
 latestBuildNumber = None
-jenkinsApiUrl = 'jenkinsapiurl';
+jenkinsApiUrl = 'jenkinsapiurl'
 
 while True:
     try:
-        response = requests.get()
+        arduino = serial.Serial("/dev/ttyACM0")
+        time.sleep(1)
+        print("Connection to Arduino established successfully!\n")
+    except Exception as e:
+        print(e)
+
+    try:
+        response = requests.get(jenkinsApiUrl)
         status = response.json()
     except:
         print('Failed to parse JSON')
@@ -35,4 +35,4 @@ while True:
         else:
             print('build succeeded')
 
-    time.sleep(60)
+    time.sleep(10)

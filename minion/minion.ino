@@ -1,9 +1,8 @@
-const int outputPin = 13;
+const int outputPin = 11;
 
 void setup() {
   pinMode(outputPin, OUTPUT);
   Serial.begin(9600);
-  Serial.setTimeout(500);
 }
 
 void loop() {
@@ -16,3 +15,4 @@ void loop() {
     }
   }
 }
+
