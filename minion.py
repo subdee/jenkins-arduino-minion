@@ -3,10 +3,16 @@
 import serial
 import time
 import requests
-import sys
 
 latestBuildNumber = 0
 jenkinsApiUrl = 'jenkinsapiurl'
+
+
+def send_arduino_signal():
+    arduino.write(bytes(b'1'))
+    time.sleep(1)
+    arduino.close()
+
 
 while True:
     try:
@@ -21,18 +27,21 @@ while True:
         status = response.json()
     except:
         print('Failed to parse JSON')
-        sys.exit(3)
 
     if "result" in status:
         currentBuildNumber = status['number']
         print('checking build ' + str(currentBuildNumber))
         if status['result'] == "FAILURE" and currentBuildNumber > latestBuildNumber:
-            arduino.write(bytes(b'1'))
-            time.sleep(1)
-            arduino.close()
+            send_arduino_signal()
             latestBuildNumber = status['number']
             print('build failed')
+        elif status['result'] is None:
+            print('build is running')
+        elif status['result'] == "ABORTED":
+            print('build was aborted')
+        elif status['result'] == "SUCCESS":
+            print('build is ok')
         else:
-            print('build ok')
+            print('build status unknown')
 
     time.sleep(30)
